@@ -1,5 +1,7 @@
+import 'package:despesas_pessoais/components/transaction/main.dart';
 import 'package:despesas_pessoais/models/transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const ExpensesApp());
@@ -43,14 +45,19 @@ class MyHomePage extends StatelessWidget {
       body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const <Widget>[
-            Card(
+          children: <Widget>[
+            const Card(
               child: Text('Gráfico'),
               elevation: 5,
             ),
-            Card(
-              child: Text('Lista de transações'),
-              elevation: 5,
+            Column(
+              children: _transactions.map((tr) {
+                return TransactionCard(
+                  value: tr.value,
+                  title: tr.title,
+                  date: DateFormat.yMMMMd().format(tr.date),
+                );
+              }).toList(),
             ),
           ]),
     );
