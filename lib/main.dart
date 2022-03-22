@@ -19,6 +19,10 @@ class ExpensesApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+
+  final titleController = TextEditingController();
+  final valueController = TextEditingController();
+
   final _transactions = [
     Transaction(
       id: 't1',
@@ -43,7 +47,6 @@ class MyHomePage extends StatelessWidget {
         title: const Text('Despesas pessoais'),
       ),
       body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             const Card(
@@ -58,6 +61,42 @@ class MyHomePage extends StatelessWidget {
                   date: DateFormat.yMMMMd().format(tr.date),
                 );
               }).toList(),
+            ),
+            Card(
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Título',
+                      ),
+                    ),
+                    TextField(
+                      controller: valueController,
+                      decoration: const InputDecoration(
+                        labelText: 'Valor (R\$)',
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            print([titleController.text, valueController.text]);
+                          },
+                          child: const Text(
+                            'Nova Transação',
+                            style: TextStyle(color: Colors.purple),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ]),
     );
