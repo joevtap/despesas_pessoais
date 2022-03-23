@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class TransactionForm extends StatefulWidget {
-  final void Function(String, double) onSubmit;
+  final void Function(String, double, DateTime) onSubmit;
 
   const TransactionForm(this.onSubmit, {Key? key}) : super(key: key);
 
@@ -11,17 +12,37 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionFormState extends State<TransactionForm> {
-  final titleController = TextEditingController();
-  final valueController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _valueController = TextEditingController();
+  DateTime? _selectedDate;
 
   _submitForm() {
-    if (titleController.text.isEmpty ||
-        double.tryParse(valueController.text)! <= 0) {
+    if (_titleController.text.isEmpty ||
+        double.tryParse(_valueController.text)! <= 0 ||
+        _selectedDate == null) {
       return;
     }
 
-    widget.onSubmit(
-        titleController.text, double.tryParse(valueController.text) ?? 0.0);
+    widget.onSubmit(_titleController.text,
+        double.tryParse(_valueController.text) ?? 0.0, _selectedDate!);
+  }
+
+  _showDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate:
+          DateTime(DateTime.now().subtract(const Duration(days: 365 * 5)).year),
+      lastDate: DateTime.now(),
+    ).then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    });
   }
 
   @override
@@ -36,7 +57,7 @@ class _TransactionFormState extends State<TransactionForm> {
               onSubmitted: (_) {
                 _submitForm();
               },
-              controller: titleController,
+              controller: _titleController,
               decoration: const InputDecoration(
                 labelText: 'Título',
               ),
@@ -47,19 +68,51 @@ class _TransactionFormState extends State<TransactionForm> {
               },
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
-              controller: valueController,
+              controller: _valueController,
               decoration: const InputDecoration(
                 labelText: 'Valor (R\$)',
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: 70,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      _selectedDate == null
+                          ? 'Nenhuma data selecionada!'
+                          : DateFormat.yMMMMd().format(_selectedDate!),
+                      style: const TextStyle(fontSize: 16)),
+                  TextButton(
+                    onPressed: _showDatePicker,
+                    child: Text(
+                      'Selecionar data',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
+                  ),
+                ],
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(
+                ElevatedButton(
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                    ),
+                  ),
                   onPressed: _submitForm,
-                  child: const Text(
+                  child: Text(
                     'Nova Transação',
-                    style: TextStyle(color: Colors.purple),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ),
                 ),
               ],
