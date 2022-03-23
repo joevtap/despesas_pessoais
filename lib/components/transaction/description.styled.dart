@@ -8,20 +8,24 @@ class StyledDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          title,
+          // style: const TextStyle(
+          //   fontSize: 16,
+          //   fontWeight: FontWeight.bold,
+          // ),
+          style: Theme.of(context).textTheme.headline6,
         ),
-      ),
-      Text(
-        date,
-        style: TextStyle(
-          color: Colors.grey[700],
+        Text(
+          date,
+          style: TextStyle(
+            color: Colors.grey[700],
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
