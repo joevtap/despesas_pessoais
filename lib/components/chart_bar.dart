@@ -14,54 +14,61 @@ class ChartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 20,
-          child: FittedBox(
-            child: Text(
-              value.toStringAsFixed(2),
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade700,
+    return LayoutBuilder(builder: (ctx, constraints) {
+      return Column(
+        children: [
+          Container(
+            height: constraints.maxHeight * 0.15,
+            child: FittedBox(
+              child: Text(
+                value.toStringAsFixed(2),
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 5),
-        SizedBox(
-          height: 100,
-          width: 10,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              FractionallySizedBox(
-                heightFactor: percentage,
-                child: Container(
+          SizedBox(height: constraints.maxHeight * 0.05),
+          SizedBox(
+            height: constraints.maxHeight * 0.6,
+            width: 6,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Colors.grey.shade300,
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
-              )
-            ],
+                FractionallySizedBox(
+                  heightFactor: percentage,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          label,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.grey.shade700,
+          SizedBox(height: constraints.maxHeight * 0.05),
+          SizedBox(
+            height: constraints.maxHeight * 0.15,
+            child: FittedBox(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }

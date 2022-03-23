@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:despesas_pessoais/components/chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'components/transaction/transaction_form.dart';
 import 'components/transaction/transaction_list.dart';
@@ -16,8 +17,10 @@ class ExpensesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     return MaterialApp(
-      home: MyHomePage(),
+      home: const MyHomePage(),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.indigo,
@@ -99,28 +102,40 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              _openTransactionFormModal(context);
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ],
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text(
-          'Despesas pessoais',
+    final appBar = AppBar(
+      actions: [
+        IconButton(
+          onPressed: () {
+            _openTransactionFormModal(context);
+          },
+          icon: const Icon(Icons.add),
         ),
+      ],
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      title: const Text(
+        'Despesas pessoais',
       ),
+    );
+
+    final availableHeight = media(context).size.height -
+        appBar.preferredSize.height -
+        media(context).padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions, _hasTransactions),
-            TransactionList(
-                transactions: _transactions, delete: _deleteTransaction),
+            SizedBox(
+              child: Chart(_recentTransactions, _hasTransactions),
+              height: availableHeight * 0.3,
+            ),
+            SizedBox(
+              height: availableHeight * 0.7,
+              child: TransactionList(
+                  transactions: _transactions, delete: _deleteTransaction),
+            ),
           ],
         ),
       ),
@@ -135,4 +150,6 @@ class _MyHomePageState extends State<MyHomePage> {
           FloatingActionButtonLocation.miniCenterFloat,
     );
   }
+
+  MediaQueryData media(BuildContext context) => MediaQuery.of(context);
 }
